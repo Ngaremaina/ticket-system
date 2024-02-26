@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom"
 import Login from "./Login"
 import { useEffect, useState } from "react"
-
+import DashBoard from "./DashBoard"
 export default function Admin(){
     const [events, setEvents] = useState([])
 
