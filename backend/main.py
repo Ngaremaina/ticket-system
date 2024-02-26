@@ -3,6 +3,7 @@ from models import *
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from flask_session import Session
+from flask_cors import CORS
 import redis
 
 app = Flask(__name__)
@@ -23,6 +24,8 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 
 db.init_app(app)
+
+CORS(app, supports_credentials=True)
 
 @app.route("/register", methods = ["POST"])
 def add_users():
