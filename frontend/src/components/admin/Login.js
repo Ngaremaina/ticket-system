@@ -15,7 +15,7 @@ export default function Login({loginAdmin}){
 
     function handleSubmit(event){
         event.preventDefault()
-        loginadmin(admin)
+        loginAdmin(admin)
     }
     return(
         <div>
