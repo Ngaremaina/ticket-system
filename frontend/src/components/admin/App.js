@@ -2,18 +2,19 @@ import { Route, Routes } from "react-router-dom"
 import Login from "./Login"
 import { useEffect, useState } from "react"
 import DashBoard from "./DashBoard"
+
 export default function Admin(){
     const [events, setEvents] = useState([])
 
     useEffect(() => {
-        fetchEvents()
+        // fetchEvents()
     },[])
 
-    const fetchEvents = async () =>{
-        const response = await fetch();
-        const data = await response.json()
-        return setEvents(data)
-    }
+    // const fetchEvents = async () =>{
+    //     const response = await fetch("");
+    //     const data = await response.json()
+    //     return setEvents(data)
+    // }
     function loginAdmin(user){
         fetch("",{
             method:"POST",

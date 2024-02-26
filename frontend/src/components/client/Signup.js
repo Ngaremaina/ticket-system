@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-export default function Signup({addUser}){
+export default function Signup(){
     const [user, setUser] = useState({
         name:"",
         email:"",
@@ -13,6 +13,17 @@ export default function Signup({addUser}){
         const value = event.target.value;
         return setUser(prev =>  {return {...prev,[input]:value}})
 
+    }
+
+    function addUser(user){
+        fetch("http://127.0.0.1:5000/register",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(user)
+
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
     }
 
     function handleSubmit(event){
