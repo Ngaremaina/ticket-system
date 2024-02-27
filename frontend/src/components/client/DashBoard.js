@@ -34,7 +34,7 @@ export default function DashBoard(){
     }
     return(
         <div>{client ? (
-            <div>Logged in
+            <div>Logged in tou dsd
                 <p>ID: {client.id}</p>
                 <button onClick={handleLogout}>Logout</button>
             </div>
