@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, redirect } from "react-router-dom"
 import Signup from "./Signup"
 
 
@@ -7,6 +7,7 @@ export default function DashBoard(){
     const navigate = useNavigate()
 
     const [client, setClient] = useState(null)
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
         
@@ -17,6 +18,8 @@ export default function DashBoard(){
         }
         fetchUser()
     },[])
+
+    console.log(client)
 
     
 
