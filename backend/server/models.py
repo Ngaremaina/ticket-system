@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from uuid import uuid4
 
 db = SQLAlchemy()
 
@@ -22,9 +23,14 @@ class Profile(db.Model):
     auth = db.relationship("Auth", backref = "profile")
 
 class Event(db.Model):
+    __tablename__ = "event"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement = True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(100), nullable=False)
+    venue = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.String(100), nullable=False)
+    time = db.Column(db.String(100), nullable=False)
     image = db.Column(db.String(100), nullable=False)
     max_attendees = db.Column(db.Integer, nullable=False)
 
@@ -40,6 +46,8 @@ class Type(db.Model):
 
 
 class Reservation(db.Model):
+    __tablename__ = "reservation"
+
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
     user_email = db.Column(db.String(100), nullable=False)
