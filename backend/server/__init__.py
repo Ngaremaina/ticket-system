@@ -1,4 +1,4 @@
-from flask import Flask, make_response, jsonify, session, request
+from flask import Flask, make_response, jsonify, session, request, Blueprint
 from server.models import *
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
@@ -8,8 +8,10 @@ import redis
 from server.schemas import *
 from datetime import datetime, timedelta, timezone
 import json
-
-from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
+from server.routes.events import events
+from server.routes.user import user
+from server.routes.tickets import tickets
+from server.routes.type import types
 from flask_mail import Mail, Message
 
 
@@ -43,3 +45,9 @@ db.init_app(app)
 jwt = JWTManager(app)
 
 CORS(app, supports_credentials=True)
+
+
+app.register_blueprint(events)
+app.register_blueprint(tickets)
+app.register_blueprint(types)
+app.register_blueprint(user)

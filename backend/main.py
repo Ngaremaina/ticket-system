@@ -1,5 +1,10 @@
 from server import app
-import server.routes
+# import server.routes
+from werkzeug.serving import run_simple
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    run_simple(
+        hostname='localhost',
+        port=5000,
+        application=app
+    )
