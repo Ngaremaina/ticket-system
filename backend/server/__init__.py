@@ -34,7 +34,7 @@ app.config.from_object(__name__)
 Session(app)
 
 # Set a secret key
-app.secret_key = 'your_secret_key_here'
+app.secret_key = b'\xaaA\xb0\x0c\x15\xad,`\xe6S\x82\x91\xcdv)\xe9'
 
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
@@ -42,7 +42,6 @@ mail = Mail(app)
 
 db.init_app(app)
 
-jwt = JWTManager(app)
 
 CORS(app, supports_credentials=True)
 

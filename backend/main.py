@@ -1,4 +1,4 @@
-from server import app
+from server import app, authentication
 # import server.routes
 from werkzeug.serving import run_simple
 

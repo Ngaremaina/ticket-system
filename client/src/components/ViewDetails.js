@@ -17,12 +17,12 @@ export default function ViewDetails(){
     
     useEffect(()=>{
         const fetchingProduct = async () => {
-            const response = await fetch(`http://127.0.0.1:5000/events/${name}`)
+            const response = await fetch(`/events/${name}`)
             const data = await response.json()
             return setEvents(data)
         }
         const fetchingTickets = async () => {
-            const response = await fetch(`http://127.0.0.1:5000/users/${admin.id}`)
+            const response = await fetch(`/users/${admin.id}`)
             const data = await response.json()
             return setTickets(data.ticket)
         }
@@ -47,7 +47,7 @@ export default function ViewDetails(){
                 "auth_id":admin.id
             }
             if (count < 5){
-                fetch("http://127.0.0.1:5000/tickets",{
+                fetch("/tickets",{
                 method:"POST",
                 headers:{"Content-Type": "application/json"},
                 body:JSON.stringify(ticket)
@@ -66,7 +66,7 @@ export default function ViewDetails(){
             }            
           };
         
-        return <div className="block w-full p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700" onClick={handleReservation} key={item.id}>
+        return <div className="cursor-pointer block w-full p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700" onClick={handleReservation} key={item.id}>
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{item.name}</h5>
         <p className="font-normal text-gray-700 dark:text-gray-400">Kshs. {item.price}</p>
       </div>
@@ -94,8 +94,10 @@ export default function ViewDetails(){
                 
                     
                 </div>
+                <h3 className="mb-2 text-xl tracking-tight text-gray-900 dark:text-white">Click to book your ticket</h3>
                 
                 <div className="flex justify-center gap-4">
+                    
                     {displayType}
                 </div>
 

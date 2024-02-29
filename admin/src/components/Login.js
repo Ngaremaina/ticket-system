@@ -33,7 +33,7 @@ export default function Login(){
     return(       
 
         <div className="bg-gray-50 dark:bg-gray-900 max-h-screen">
-        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-24 grid lg:grid-cols-2 gap-8 lg:gap-16">
+        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-28 grid lg:grid-cols-2 gap-8 lg:gap-16">
             <div className="flex flex-col justify-center">
             <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome to Tickety</h1>
             <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">Tickety is a comprehensive ticketing application designed to streamline the ticket management process for businesses and organizations of all sizes. With Tickety, users can easily create, track, and manage tickets for various purposes, including customer support, IT helpdesk, event management, and more. Tickety empowers businesses to deliver exceptional customer service, improve operational efficiency, and enhance collaboration across teams through its intuitive ticketing solution.</p>

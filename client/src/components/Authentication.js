@@ -13,7 +13,7 @@ export const Authentication = ({ children }) => {
 
   const loginUser = async (user) => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/login', {
+      const response = await fetch('/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ export const Authentication = ({ children }) => {
   const logout = async () => {
     try {
 
-        const response = await fetch('http://127.0.0.1:5000/logout', {
+        const response = await fetch('/logout', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

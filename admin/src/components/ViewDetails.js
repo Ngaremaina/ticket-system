@@ -4,8 +4,6 @@ import { useEffect, useState } from "react"
 export default function ViewDetails(){
     const { name } = useParams()
     const [product, setEvents] = useState({})
-    // console.log(event.id)
-    
 
     useEffect(()=>{
         const fetchingProduct = async () => {

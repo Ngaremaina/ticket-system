@@ -18,7 +18,7 @@ export default function Signup(){
     }
 
     function addUser(user){
-        fetch("http://127.0.0.1:5000/register",{
+        fetch("/register",{
             method:"POST",
             headers:{"Content-Type":"application/json"},
             body:JSON.stringify(user)
