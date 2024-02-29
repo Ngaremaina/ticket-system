@@ -13,7 +13,7 @@ function App() {
 
 
   return (
-    <div className="App">
+    <div className="max-h-screen">
        <Routes>
         {/* Redirect to Dashboard if authenticated */}
         {admin && <Route path="/admin" element={<DashBoard />} />}

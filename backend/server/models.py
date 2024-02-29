@@ -10,6 +10,7 @@ class Auth(db.Model):
     email = db.Column(db.String(255), nullable = False)
     password = db.Column(db.String(255), nullable = False)
     role = db.Column(db.String(255), nullable = False)
+    
 
 class Profile(db.Model):
     __tablename__ = "profile"
@@ -45,10 +46,19 @@ class Type(db.Model):
     event = db.relationship("Event", backref = "type")
 
 
-class Reservation(db.Model):
-    __tablename__ = "reservation"
+class Ticket(db.Model):
+    __tablename__ = "ticket"
 
-    id = db.Column(db.Integer, primary_key=True)
-    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
-    user_email = db.Column(db.String(100), nullable=False)
-    num_tickets = db.Column(db.Integer, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(100), nullable=False)
+    venue = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.String(100), nullable=False)
+    time = db.Column(db.String(100), nullable=False)
+    image = db.Column(db.String(100), nullable=False)
+    persons = db.Column(db.Integer, nullable=False)
+    type_name = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Integer, nullable = False)
+    
+    auth_id = db.Column(db.Integer, db.ForeignKey('auth.id'), nullable=False) 
+    auth = db.relationship("Auth", backref = "ticket")

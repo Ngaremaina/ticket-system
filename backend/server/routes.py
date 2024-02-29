@@ -155,6 +155,12 @@ def get_event(name):
     event_data = EventSchema().dump(event)
     return make_response(jsonify(event_data), 200)
 
+@app.route("/events/<int:id>", methods = ["GET"])
+def get_event_by_id(id):
+    event = Event.query.filter_by(id = id).first()
+    event_data = EventSchema().dump(event)
+    return make_response(jsonify(event_data), 200)
+
 
 @app.route("/events", methods = ["POST"])
 def add_event():
@@ -230,6 +236,63 @@ def delete_type(id):
     db.session.delete(type)
     db.session.commit()
     return make_response(jsonify(message = "type deleted successfully"), 200)
+
+@app.route("/tickets", methods = ["GET"])
+def get_tickets():
+    ticket_list = Ticket.query.all()
+    ticket_data = TicketSchema(many = True).dump(ticket_list)  
+    return make_response(jsonify(ticket_data), 200)
+
+@app.route("/tickets/<int:id>", methods = ["GET"])
+def get_ticket(id):
+    ticket = Ticket.query.filter_by(id =  id).first()
+    ticket_data = TypeSchema().dump(ticket)
+    return make_response(jsonify(ticket_data), 200)
+
+@app.route("/tickets", methods = ["POST"])
+def add_ticket():
+    data = request.get_json()
+    tickets = TicketSchema().load(data)
+    new_ticket = Ticket(**tickets)
+    db.session.add(new_ticket)
+    db.session.commit()
+    type_schema = TypeSchema().dump(new_ticket)
+    return make_response(jsonify(type_schema))
+
+@app.route('/tickets/<int:id>', methods=['PATCH'])
+def update_ticket_details(id):
+    ticket = Ticket.query.filter_by(id = id).first()
+    data = request.get_json()
+    tickets = TicketSchema().load(data)
+    for field, value in tickets.items():
+        setattr(ticket, field, value)
+    db.session.add(ticket)
+    db.session.commit() 
+
+    users_data = TypeSchema().dump(ticket)
+    return make_response(jsonify(users_data))
+
+@app.route("/tickets/<int:id>", methods = ["DELETE"])
+def delete_ticket(id):
+    ticket = Ticket.query.filter_by(id = id).first()
+    db.session.delete(ticket)
+    db.session.commit()
+    return make_response(jsonify(message = "ticket deleted successfully"), 200)
+
+
+@app.route("/users", methods = ["GET"])
+def get_users():
+    users_list = Auth.query.all()
+    user_data = AuthSchema(many = True).dump(users_list)  
+    return make_response(jsonify(user_data), 200)
+
+@app.route("/users/<int:id>", methods = ["GET"])
+def get_users_by_id(id):
+    users_list = Auth.query.filter_by(id = id).first()
+    user_data = AuthSchema().dump(users_list)  
+    return make_response(jsonify(user_data), 200)
+
+
 
 
 @app.route('/send-email', methods=['POST'])
