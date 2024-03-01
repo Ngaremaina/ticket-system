@@ -4,27 +4,30 @@ import { useEffect, useState } from "react"
 export default function ViewDetails(){
     const { name } = useParams()
     const [product, setEvents] = useState({})
-
+    //Send a GET request to the events endpoint by name
     useEffect(()=>{
         const fetchingProduct = async () => {
             const response = await fetch(`/events/${name}`)
             const data = await response.json()
+            
             return setEvents(data)
         }
         fetchingProduct()
     },[name])
 
+     // Initialize state for ticket data using the 'useState' hook
     const [typeticket, setType] = useState({
         name:"",
         price:0,
     })
 
+    // Function to handle form submission
     function handleSubmit(event){
+        // Prevent the default form submission behavior
         event.preventDefault()
         typeticket["event_id"] = product.id
 
-        console.log(typeticket)
-
+        // Send a POST request to the '/types' endpoint with the ticket data
         fetch("/types", {
             method:"POST",
             headers:{"Content-Type": "application/json"},
@@ -32,16 +35,18 @@ export default function ViewDetails(){
         })
 
     }
-    
+    // Function to handle changes in user inputs
     function handleChange(event){
+        // Extract the input id and value from the event target
         const input = event.target.id
         const value = event.target.value
 
+        // Update the user state using the spread operator to maintain immutability
         return setType(prev => {return {...prev, [input]:value}})
     }
 
  
-
+    //Display the tickets 
     const displayType = product.type?.map(item => {
         
         return <div className="block w-full p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700" key={item.id}>

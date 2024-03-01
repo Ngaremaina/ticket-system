@@ -2,9 +2,9 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 export default function AddForm(){
-    
-    const navigate = useNavigate() 
-
+    const navigate = useNavigate()
+     
+    // Initialize state for form data using the 'useState' hook
     const [form, setForm] = useState({
         name:"",
         description:"",
@@ -14,19 +14,22 @@ export default function AddForm(){
         date:"",
         time:""
     })
-    
+    // Function to handle changes in form inputs
     function handleChange(event){
+        // Extract the input id and value from the event target
         const input = event.target.id
         const value = event.target.value
 
+        // Update the form state using the spread operator to maintain immutability
         setForm(prev => {return {...prev, [input]: value}})
 
     }
-
+    // Function to handle form submission
     function handleSubmit(event){
+        // Prevent the default form submission behavior
         event.preventDefault();
-        console.log(form)
 
+         // Send a POST request to the '/events' endpoint with the form data
         fetch("/events", {
             method:"POST",
             
@@ -34,6 +37,7 @@ export default function AddForm(){
             body:JSON.stringify(form)
         })
         .then(response => {
+            // If the response is OK, navigate to the '/dashboard' route
             if (response.ok){
                 navigate('/dashboard')
             }

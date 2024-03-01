@@ -6,23 +6,30 @@ export default function Login(){
     const navigate = useNavigate()
     const {loginUser} = useAuth()
 
+    // Initialize state for user data using the 'useState' hook
     const [user, setUser] = useState({
         email:"",
         password:"",
     })
 
     
-
+// Function to handle changes in user inputs
     function handleChange(event){
+         // Extract the input id and value from the event target
         const input = event.target.name;
         const value = event.target.value;
+        // Update the user state using the spread operator to maintain immutability
         return setUser(prev =>  {return {...prev,[input]:value}})
 
     }
 
+    // Function to handle form submission
     function handleSubmit(event){
+        // Prevent the default form submission behavior
         event.preventDefault()
+        //Call the loginUser function
         loginUser(user)
+
         .then(() => {
             // Navigate to the desired location after successful login
             navigate('/dashboard');

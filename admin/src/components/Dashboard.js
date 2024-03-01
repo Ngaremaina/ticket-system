@@ -3,8 +3,10 @@ import EventList from "./EventList"
 import Header from "./Header";
 
 export default function DashBoard({EDITMODE}){
+  // Initialize state for events data using the 'useState' hook
     const [events, setEvents] = useState([]);
 
+    // Send a GET request to the '/events' endpoint with the form data
     useEffect(()=> {
         fetch("/events")
         .then(response => response.json())
@@ -15,7 +17,8 @@ export default function DashBoard({EDITMODE}){
     return (
       <div>
         <Header/>
-        <EventList events={events}  EDITMODE = {EDITMODE}/>
+        {/* Pass the events state as props */}
+        <EventList events={events} />
       </div>
     );
 }
