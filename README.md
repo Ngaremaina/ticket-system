@@ -74,9 +74,9 @@ This is a ticket system application that allows admins to perform CRUD (Create, 
        cd ..
      ```
 11. Run the web application:
-   ```bash
-   honcho start -f Procfile.dev
-   ```
+     ```bash
+     honcho start -f Procfile.dev
+     ```
 
 
 ## License
