@@ -41,8 +41,25 @@ This is a ticket system application that allows admins to perform CRUD (Create, 
    ```bash
     pip install -r requirements.txt
    ```
+5. Navigate to the flask init file in the server directory:
+   ```bash
+   cd backend/server/
+   ```
 
-5. Install frontend dependencies:
+6. In the file, change the mysql url to your own mysql:
+   ```bash
+   app.config["SQLALCHEMY_DATABASE_URI"] = mysql+pymysql://username:password@localhost/databasename
+   ```
+7. Navigate to the backend directory:
+   ```bash
+   cd ..
+   ```
+8. Run the following commands to migrate the models into the database:
+   ```bash
+   export FLASK_APP=main.py
+   flask db upgrade head
+   ```
+9. Navigate to the frontend directories and install frontend dependencies:
 
    ```bash
    cd client
@@ -52,16 +69,16 @@ This is a ticket system application that allows admins to perform CRUD (Create, 
    cd ../admin
    npm install
    ```
-6. Navigate to the project directory
-    ```bash
-   cd ..
-   ```
-
-7. Run the web application:
-
+10. Navigate to the project directory
+     ```bash
+       cd ..
+     ```
+11. Run the web application:
    ```bash
    honcho start -f Procfile.dev
    ```
+
+
 ## License
 
 This project is licensed under the [GNU GENERAL PUBLIC LICENSE](LICENSE).
