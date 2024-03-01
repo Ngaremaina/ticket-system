@@ -2,23 +2,19 @@ import {useEffect, useState} from "react"
 import { useAuth } from "./Authentication"
 export default function Reservation(){
     const [tickets, setTickets] = useState([])
-    const {admin} = useAuth();
-    // const [ticketCount, setTicketCount] = useState(0);
-    
+    const {admin} = useAuth();  
 
-
+    //Send a GET request to the '/users' endpoint by ID
     useEffect(()=>{
          fetch(`/users/${admin.id}`)
          .then(response => response.json())
          .then(data => setTickets(data.ticket))
         
     },[admin.id])
-
-
   
-
+   //Map through each ticket 
     const displayTicket = tickets?.map(item => {
-        
+         //Display each ticket 
         return <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" key={item.id}>
             <img className="rounded-t-lg h-3/6 w-full" src={item.image} alt = {item.name}/>
         <div className="p-5">

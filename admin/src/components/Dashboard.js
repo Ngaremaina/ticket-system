@@ -17,7 +17,7 @@ export default function DashBoard({EDITMODE}){
     return (
       <div>
         <Header/>
-        {/* Pass the events state as props */}
+        {/* Pass the events as props to the EventList*/}
         <EventList events={events} />
       </div>
     );

@@ -48,6 +48,10 @@ This is a ticket system application that allows admins to perform CRUD (Create, 
    cd client
    npm install
    ```
+   ```bash
+   cd ../admin
+   npm install
+   ```
 6. Navigate to the project directory
     ```bash
    cd ..

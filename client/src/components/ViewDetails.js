@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
-// import emailjs from '@emailjs/browser';
 import { useAuth } from "./Authentication";
 import Header from "./Header";
 
@@ -11,10 +10,7 @@ export default function ViewDetails(){
     const [tickets, setTickets] = useState([])
     const navigate = useNavigate()
     
-    const serviceId = 'service_xzrwal2';
-    const templateId = 'template_5ma9dtu';
-    const publicKey = 'o-b6WaJHbLU3D5kdv';
-    
+    //Send a GET request to the '/events' and '/users' endpoints by 'name' and 'id' respectively
     useEffect(()=>{
         const fetchingProduct = async () => {
             const response = await fetch(`/events/${name}`)
@@ -30,10 +26,15 @@ export default function ViewDetails(){
         fetchingTickets()
     },[name, admin.id])
 
+    //Count the number of tickets booked from the logged in user
     const count = tickets?.length   
 
+    //Map the tickets
     const displayType = event.type?.map(item => {
+
+        //Function to handle Ticket Reservation
         const handleReservation = () => {
+            //Initialize ticket object to get the ticket details
             const ticket ={
                 "name": event.name,
                 "description": event.description,
@@ -46,13 +47,17 @@ export default function ViewDetails(){
                 "price":item.price,
                 "auth_id":admin.id
             }
+            //Check if the tickets are less than 5
             if (count < 5){
+
+                //Send a POST request to the '/tickets' endpoint with the ticket data
                 fetch("/tickets",{
-                method:"POST",
-                headers:{"Content-Type": "application/json"},
-                body:JSON.stringify(ticket)
+                    method:"POST",
+                    headers:{"Content-Type": "application/json"},
+                    body:JSON.stringify(ticket)
             })
             .then(response => {
+                //Navigate to the dashboard if response is OK
                 if (response.ok){
                     response.json()
                     navigate('/dashboard')
@@ -61,6 +66,7 @@ export default function ViewDetails(){
             .then(data => console.log(data))
 
             }
+            //Display an alert if tickets are more than 5
             else{
                 alert("You have reached the maximum number of tickets")
             }            

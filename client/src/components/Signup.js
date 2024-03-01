@@ -3,6 +3,8 @@ import { Link, useNavigate} from "react-router-dom";
 
 export default function Signup(){
     const navigate = useNavigate()
+
+    //Initialize state for user data using the 'useState' hook
     const [user, setUser] = useState({
         name:"",
         email:"",
@@ -10,14 +12,20 @@ export default function Signup(){
         role:"client"
     })
 
+    // Function to handle changes in user inputs
     function handleChange(event){
-        const input = event.target.name;
-        const value = event.target.value;
-        return setUser(prev =>  {return {...prev,[input]:value}})
+        // Extract the input id and value from the event target
+       const input = event.target.name;
+       const value = event.target.value;
+       // Update the user state using the spread operator to maintain immutability
+       return setUser(prev =>  {return {...prev,[input]:value}})
 
-    }
+   }
 
+   
+   //Function that handles the POST request to the database
     function addUser(user){
+        //Send a POST request to the '/register' end point with the user data
         fetch("/register",{
             method:"POST",
             headers:{"Content-Type":"application/json"},
@@ -25,20 +33,24 @@ export default function Signup(){
 
         })
         .then(response => {
+            //Navigate to root page if user is registered successfully
             if (response.status === 200) {
                 navigate("/")
             }
+            //Else display a message stating invalid
             else{
                 console.log("invalid")
             }
         })
-        .then(data => console.log(data))
+        
     }
 
+    //Function that handles the submission of user data
     function handleSubmit(event){
         event.preventDefault()
         addUser(user)
     }
+
     return(
         <section className="bg-gray-50 dark:bg-gray-900">
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-24 grid lg:grid-cols-2 gap-8 lg:gap-16">

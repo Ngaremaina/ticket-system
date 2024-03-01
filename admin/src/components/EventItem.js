@@ -2,7 +2,7 @@ import {Link} from "react-router-dom"
 
 export default function EventItem({id, name, description, image, venue, time, date, }){
 
-    //Function that sends a DELETE request to the events end point
+    //Function that sends a DELETE request to the '/events' end point by ID
     function handleDelete(){
         fetch(`/events/${id}`,{
             method: "DELETE",

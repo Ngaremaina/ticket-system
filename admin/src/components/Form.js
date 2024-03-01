@@ -6,7 +6,7 @@ export default function EventForm(){
     const { name } = useParams()
     const navigate = useNavigate()  
 
-   // Send a GET request to the '/events' endpoint with the form data
+   // Send a GET request to the '/events' endpoint by 'name'
     useEffect(() => {
         fetch(`/events/${name}`)
         .then(response => response.json())
