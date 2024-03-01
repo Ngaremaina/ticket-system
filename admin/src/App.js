@@ -8,10 +8,9 @@ import AddForm from './components/AddForm';
 import ViewDetails from './components/ViewDetails';
 
 function App() {
+  
   const { admin } = useAuth();
  
-
-
   return (
     <div className="max-h-screen">
        <Routes>

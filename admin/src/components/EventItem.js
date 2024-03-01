@@ -2,7 +2,7 @@ import {Link} from "react-router-dom"
 
 export default function EventItem({id, name, description, image, venue, time, date, }){
     function handleDelete(){
-        fetch(`http://127.0.0.1:5000/events/${id}`,{
+        fetch(`/events/${id}`,{
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"

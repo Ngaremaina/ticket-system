@@ -27,7 +27,7 @@ export default function AddForm(){
         event.preventDefault();
         console.log(form)
 
-        fetch("http://127.0.0.1:5000/events", {
+        fetch("/events", {
             method:"POST",
             
             headers:{"Content-Type": "application/json"},

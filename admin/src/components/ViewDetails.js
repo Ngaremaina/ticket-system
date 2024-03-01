@@ -7,7 +7,7 @@ export default function ViewDetails(){
 
     useEffect(()=>{
         const fetchingProduct = async () => {
-            const response = await fetch(`http://127.0.0.1:5000/events/${name}`)
+            const response = await fetch(`/events/${name}`)
             const data = await response.json()
             return setEvents(data)
         }
@@ -25,7 +25,7 @@ export default function ViewDetails(){
 
         console.log(typeticket)
 
-        fetch("http://127.0.0.1:5000/types", {
+        fetch("/types", {
             method:"POST",
             headers:{"Content-Type": "application/json"},
             body:JSON.stringify(typeticket)

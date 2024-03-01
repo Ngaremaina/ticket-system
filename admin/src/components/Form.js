@@ -7,7 +7,7 @@ export default function EventForm(){
     const navigate = useNavigate() 
    
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/events/${name}`)
+        fetch(`/events/${name}`)
         .then(response => response.json())
         .then(data => setEvents(data))
     },[name])
@@ -35,7 +35,7 @@ export default function EventForm(){
     function handleSubmit(event){
         event.preventDefault();
 
-        fetch(`http://127.0.0.1:5000/events/${events.id}`, {
+        fetch(`/events/${events.id}`, {
             method:"PATCH",
             headers:{"Content-Type": "application/json"},
             body:JSON.stringify(form)
