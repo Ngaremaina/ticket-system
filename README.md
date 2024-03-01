@@ -20,46 +20,49 @@ This is a ticket system application that allows admins to perform CRUD (Create, 
 
 ## Installation
 
-1. Navigate to the root directory:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Ngaremaina/ticket-system
+   ```
+2. Navigate to the root directory:
 
    ```bash
    cd ticket-system
    ```
-2. Create a virtual environment:
+3. Create a virtual environment:
     ```bash
    python -m venv env
    ```
 
-3. Activate the virtual environment:
+4. Activate the virtual environment:
     ```bash
     source env/bin/activate
    ```
-
-
-4. Install backend dependencies:
+    
+5. Install backend dependencies:
 
    ```bash
     pip install -r requirements.txt
    ```
-5. Navigate to the flask init file in the server directory:
+6. Navigate to the flask init file in the server directory:
    ```bash
    cd backend/server/
    ```
 
-6. In the file, change the mysql url to your own mysql:
+7. In the file, change the mysql url to your own mysql:
    ```bash
    app.config["SQLALCHEMY_DATABASE_URI"] = mysql+pymysql://username:password@localhost/databasename
    ```
-7. Navigate to the backend directory:
+8. Navigate to the backend directory:
    ```bash
    cd ..
    ```
-8. Run the following commands to migrate the models into the database:
+9. Run the following commands to migrate the models into the database:
    ```bash
    export FLASK_APP=main.py
    flask db upgrade head
    ```
-9. Navigate to the frontend directories and install frontend dependencies:
+10. Navigate to the frontend directories and install frontend dependencies:
 
    ```bash
    cd client
@@ -69,20 +72,18 @@ This is a ticket system application that allows admins to perform CRUD (Create, 
    cd ../admin
    npm install
    ```
-10. Navigate to the project directory
+11. Navigate to the project directory
      ```bash
        cd ..
      ```
-11. Run the web application:
+12. Run the web application:
      ```bash
      honcho start -f Procfile.dev
      ```
-
-
+     
 ## License
 
 This project is licensed under the [GNU GENERAL PUBLIC LICENSE](LICENSE).
-
 
 ## Usage
 
