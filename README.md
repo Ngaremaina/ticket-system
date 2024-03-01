@@ -20,60 +20,52 @@ This is a ticket system application that allows admins to perform CRUD (Create, 
 
 ## Installation
 
-1. Clone the repository:
+1. Navigate to the root directory:
 
    ```bash
-   git clone https://github.com/Ngaremaina/ticket-system
+   cd ticket-system
+   ```
+2. Create a virtual environment:
+    ```bash
+   python -m venv env
    ```
 
-2. Install backend dependencies:
+3. Activate the virtual environment:
+    ```bash
+    source env/bin/activate
+   ```
+
+
+4. Install backend dependencies:
 
    ```bash
-   cd ticket-system/backend
-   pip install -r requirements.txt
+    pip install -r requirements.txt
    ```
 
-3. Set up the database:
+5. Install frontend dependencies:
 
    ```bash
-   flask db init
-   flask db migrate
-   flask db upgrade
-   ```
-
-4. Set environment variables:
-
-   Create a `.env` file in the `backend` directory with the following contents:
-
-   ```
-   FLASK_APP=app.py
-   FLASK_ENV=development
-   SECRET_KEY=your_secret_key
-   DATABASE_URL=your_database_url
-   ```
-
-5. Run the backend server:
-
-   ```bash
-   export FLASK_APP=main.py
-   flask run
-   ```
-
-6. Install frontend dependencies:
-
-   ```bash
-   cd ../frontend
+   cd client
    npm install
    ```
+6. Navigate to the project directory
+    ```bash
+   cd ..
+   ```
 
-7. Run the frontend server:
+7. Run the web application:
 
    ```bash
-   npm start
+   honcho start -f Procfile.dev
    ```
+## License
+
+This project is licensed under the [GNU GENERAL PUBLIC LICENSE](LICENSE).
+
 
 ## Usage
 
 - Register a new user account or log in with existing credentials.
 - Navigate to the ticket management section to create, view, update, or delete tickets.
 - Log out when done.
+

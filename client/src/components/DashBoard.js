@@ -15,7 +15,7 @@ export default function DashBoard({tickets}){
     },[])
 
     return (
-      <div>
+      <div className="dark:bg-gray-800 dark:border-gray-700">
         <Header/>
         <EventList events={events}/>
         <Reservation/>
