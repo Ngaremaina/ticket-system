@@ -64,14 +64,14 @@ This is a ticket system application that allows admins to perform CRUD (Create, 
    ```
 10. Navigate to the frontend directories and install frontend dependencies:
 
-   ```bash
-   cd client
-   npm install
-   ```
-   ```bash
-   cd ../admin
-   npm install
-   ```
+     ```bash
+       cd client
+       npm install
+     ```
+     ```bash
+       cd ../admin
+       npm install
+     ```
 11. Navigate to the project directory
      ```bash
        cd ..
