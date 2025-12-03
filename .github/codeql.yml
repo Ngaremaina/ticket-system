@@ -25,7 +25,7 @@ jobs:
         with:
           languages: |
             python
-            javascript
+            javascript-typescript
 
       # If your JS frontend uses a build step (React, Vite, Next.js, Vue, Angular)
       - name: Install Node.js
