@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, make_response, request
 
+from server.authentication import admin_required
 from server.extensions import db
 from server.models import Event
 from server.schemas import EventSchema
@@ -45,6 +46,7 @@ def get_event_by_id(id):
 
 #Route to add events to the database
 @events.route("/events", methods = ["POST"])
+@admin_required
 def add_event():
      # Get the new data from the request
     data = request.get_json(silent=True) or {}
@@ -67,6 +69,7 @@ def add_event():
 
 #Route to update events
 @events.route('/events/<int:id>', methods=['PATCH'])
+@admin_required
 def update_event_details(id):
 
     #Query the data from the database by id
@@ -94,6 +97,7 @@ def update_event_details(id):
 
 #Route to delete the events by Id
 @events.route("/events/<int:id>", methods = ["DELETE"])
+@admin_required
 def delete_event(id):
 
     #Query the data from the database by id

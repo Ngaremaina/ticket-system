@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, make_response, request
 
+from server.authentication import admin_required
 from server.extensions import db
 from server.models import Type
 from server.schemas import TypeSchema
@@ -33,6 +34,7 @@ def get_type(id):
 
 # Route to add types to the database
 @types.route("/types", methods=["POST"])
+@admin_required
 def add_type():
     # Get the data from the request
     data = request.get_json(silent=True) or {}
@@ -55,6 +57,7 @@ def add_type():
 
 # Route to update types
 @types.route('/types/<int:id>', methods=['PATCH'])
+@admin_required
 def update_type_details(id):
     # Query the data from the database by id
     type = db.get_or_404(Type, id)
@@ -81,6 +84,7 @@ def update_type_details(id):
 
 # Route to delete the types by Id
 @types.route("/types/<int:id>", methods=["DELETE"])
+@admin_required
 def delete_type(id):
     # Query the data from the database by id
     type = db.get_or_404(Type, id)

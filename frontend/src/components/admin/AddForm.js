@@ -1,4 +1,4 @@
-import apiFetch from "../api";
+import apiFetch from "../../api";
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -40,7 +40,7 @@ export default function AddForm(){
         .then(response => {
             // If the response is OK, navigate to the '/dashboard' route
             if (response.ok){
-                navigate('/dashboard')
+                navigate('/admin')
             }
         })
 

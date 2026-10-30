@@ -1,17 +1,17 @@
-import apiFetch from "../api";
+import apiFetch from "../../api";
 import {useEffect, useState} from "react"
-import { useAuth } from "./Authentication"
+import { useAuth } from "../Authentication"
 export default function Reservation(){
     const [tickets, setTickets] = useState([])
-    const {admin} = useAuth();  
+    const {user} = useAuth();  
 
     //Send a GET request to the '/users' endpoint by ID
     useEffect(()=>{
-         apiFetch(`/users/${admin.id}`)
+         apiFetch(`/users/${user.id}`)
          .then(response => response.json())
          .then(data => setTickets(data.ticket))
         
-    },[admin.id])
+    },[user.id])
   
    //Map through each ticket 
     const displayTicket = tickets?.map(item => {

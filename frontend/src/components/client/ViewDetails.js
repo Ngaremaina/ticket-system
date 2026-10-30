@@ -1,12 +1,11 @@
-import apiFetch from "../api";
+import apiFetch from "../../api";
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { useAuth } from "./Authentication";
-import Header from "./Header";
+import { useAuth } from "../Authentication";
 
 export default function ViewDetails(){
     const { name } = useParams()
-    const {admin} = useAuth()
+    const {user} = useAuth()
     const [event, setEvents] = useState({})
     const [tickets, setTickets] = useState([])
     const navigate = useNavigate()
@@ -14,18 +13,18 @@ export default function ViewDetails(){
     //Send a GET request to the '/events' and '/users' endpoints by 'name' and 'id' respectively
     useEffect(()=>{
         const fetchingProduct = async () => {
-            const response = await apiFetch(`/events/${name}`)
+            const response = await apiFetch(`/events/${encodeURIComponent(name)}`)
             const data = await response.json()
             return setEvents(data)
         }
         const fetchingTickets = async () => {
-            const response = await apiFetch(`/users/${admin.id}`)
+            const response = await apiFetch(`/users/${user.id}`)
             const data = await response.json()
             return setTickets(data.ticket)
         }
         fetchingProduct()
         fetchingTickets()
-    },[name, admin.id])
+    },[name, user.id])
 
     //Count the number of tickets booked from the logged in user
     const count = tickets?.length   
@@ -46,7 +45,7 @@ export default function ViewDetails(){
                 "persons":1,
                 "type_name":item.name,
                 "price":item.price,
-                "auth_id":admin.id
+                "auth_id":user.id
             }
             //Check if the tickets are less than 5
             if (count < 5){
@@ -57,14 +56,17 @@ export default function ViewDetails(){
                     headers:{"Content-Type": "application/json"},
                     body:JSON.stringify(ticket)
             })
-            .then(response => {
+            .then(async response => {
                 //Navigate to the dashboard if response is OK
                 if (response.ok){
-                    response.json()
-                    navigate('/dashboard')
+                    navigate('/events')
+                }
+                //Otherwise show the reason from the API (e.g. ticket limit reached)
+                else{
+                    const data = await response.json()
+                    alert(data.error || "Could not book the ticket")
                 }
             })
-            .then(data => console.log(data))
 
             }
             //Display an alert if tickets are more than 5
@@ -83,7 +85,6 @@ export default function ViewDetails(){
     
     return(
         <div>
-            <Header/>
              <section className="bg-gray-50 dark:bg-gray-900">
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 grid lg:grid-cols-2 gap-8 lg:gap-16">
             <div className="flex flex-col justify-center">

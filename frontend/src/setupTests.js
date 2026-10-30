@@ -9,6 +9,9 @@ import { TextDecoder, TextEncoder } from 'util';
 Object.assign(global, { TextDecoder, TextEncoder });
 
 beforeEach(() => {
-  global.fetch = jest.fn();
+  // By default every API call behaves like a logged out session
+  global.fetch = jest.fn(() =>
+    Promise.resolve({ ok: false, status: 401, json: () => Promise.resolve({ error: 'Unauthorized' }) })
+  );
   sessionStorage.clear();
 });

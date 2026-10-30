@@ -19,7 +19,7 @@ class TicketSchema(BaseSchema):
     persons = fields.Integer(required=True, validate=validate.Range(min=1))  # Number of persons allowed per ticket
     type_name = fields.String(required=True)  # Type of the ticket
     price = fields.Integer(required=True, validate=validate.Range(min=0))  # Price of the ticket
-    auth_id = fields.Integer(required=True)  # ID of the authentication associated with the ticket
+    auth_id = fields.Integer(dump_only=True)  # ID of the user who owns the ticket (set from the session)
 
 # Schema for representing Type objects
 class TypeSchema(BaseSchema):

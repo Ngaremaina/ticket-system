@@ -1,7 +1,7 @@
-import apiFetch from "../api";
+import apiFetch from "../../api";
 import {Link} from "react-router-dom"
 
-export default function EventItem({id, name, description, image, venue, time, date, }){
+export default function EventItem({id, name, description, image, venue, time, date, onDelete}){
 
     //Function that sends a DELETE request to the '/events' end point by ID
     function handleDelete(){
@@ -11,12 +11,18 @@ export default function EventItem({id, name, description, image, venue, time, da
                 "Content-Type": "application/json"
             }
         })
+        //Refresh the list once the event is deleted
+        .then(response => {
+            if (response.ok && onDelete){
+                onDelete()
+            }
+        })
     }
     
     return(       
 
         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {id}
             </th>
             <td className="px-6 py-4">
@@ -39,10 +45,10 @@ export default function EventItem({id, name, description, image, venue, time, da
                 {time}
             </td>
             <td className="px-6 py-4">
-                <Link to={`/events/${name}`}>View</Link>
+                <Link to={`/admin/events/${encodeURIComponent(name)}`}>View</Link>
             </td>
             <td className="px-6 py-4">
-                <Link to={`/edit/${name}`}>Edit</Link>
+                <Link to={`/admin/events/${encodeURIComponent(name)}/edit`}>Edit</Link>
             </td>
             <td className="px-6 py-4">
                 <button onClick={handleDelete}>Delete</button>

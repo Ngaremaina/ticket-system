@@ -1,4 +1,6 @@
-from flask import Blueprint, jsonify, request, session
+from functools import wraps
+
+from flask import Blueprint, abort, jsonify, request, session
 
 from server.extensions import bcrypt, db
 from server.models import Auth
@@ -6,6 +8,39 @@ from server.schemas import AuthSchema, LoginSchema
 
 # Create a Blueprint for the authentication routes
 auth = Blueprint("auth", __name__)
+
+
+def current_user():
+    """Return the logged in user for this request, or None."""
+    user_id = session.get("user_id")
+    return db.session.get(Auth, user_id) if user_id else None
+
+
+def roles_required(*roles):
+    """Require a logged in user; when roles are given, the user must have one of them."""
+    def decorator(view):
+        @wraps(view)
+        def wrapped(*args, **kwargs):
+            user = current_user()
+            if user is None:
+                abort(401, description="Authentication required")
+            if roles and user.role not in roles:
+                abort(403, description="You do not have permission to perform this action")
+            return view(*args, **kwargs)
+        return wrapped
+    return decorator
+
+
+# Any logged in user
+login_required = roles_required()
+admin_required = roles_required("admin")
+
+
+def require_self_or_admin(user_id):
+    """Abort unless the current user owns the resource or is an admin."""
+    user = current_user()
+    if user.role != "admin" and user.id != user_id:
+        abort(403, description="You do not have permission to access this resource")
 
 #Register user
 @auth.route("/register", methods = ["POST"])
@@ -62,9 +97,8 @@ def login_user():
 #Get details of the logged in user
 @auth.route("/current_user", methods=["GET"])
 def get_current_user():
-    #Get the stored session by id
-    user_id = session.get("user_id")
-    user = db.session.get(Auth, user_id) if user_id else None
+    #Get the user stored in the session
+    user = current_user()
 
     #If invalid return the error message unauthorized
     if user is None:

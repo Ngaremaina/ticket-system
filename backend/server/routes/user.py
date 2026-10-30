@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, make_response, request
 
+from server.authentication import admin_required, login_required, require_self_or_admin
 from server.extensions import bcrypt, db
 from server.models import Auth
 from server.schemas import AuthSchema
@@ -9,6 +10,7 @@ user = Blueprint('user', __name__)
 
 #Get all the users
 @user.route("/users", methods = ["GET"])
+@admin_required
 def get_users():
     #Query all the users from the database
     users_list = Auth.query.all()
@@ -21,7 +23,11 @@ def get_users():
 
 #Get all the user details by id
 @user.route("/users/<int:id>", methods = ["GET"])
+@login_required
 def get_users_by_id(id):
+    #Users can only view their own profile unless they are an admin
+    require_self_or_admin(id)
+
     #Query the user by id from the database
     users_list = db.get_or_404(Auth, id)
 
@@ -33,7 +39,11 @@ def get_users_by_id(id):
 
 #Route to update users
 @user.route('/users/<int:id>', methods=['PATCH'])
+@login_required
 def update_user_details(id):
+    #Users can only update their own profile unless they are an admin
+    require_self_or_admin(id)
+
      #Query the data from the database by id
     user = db.get_or_404(Auth, id)
 
@@ -42,6 +52,12 @@ def update_user_details(id):
 
    # Deserialize the data using AuthSchema and load it
     users = AuthSchema(partial=True).load(data)
+
+    # Emails must stay unique
+    if "email" in users:
+        users["email"] = users["email"].lower()
+        if Auth.query.filter(Auth.email == users["email"], Auth.id != id).first():
+            return make_response(jsonify(message = "User exists"), 409)
 
     # Never store a plain text password
     if "password" in users:
@@ -63,6 +79,7 @@ def update_user_details(id):
 
 #Route to delete the users by Id
 @user.route("/users/<int:id>", methods = ["DELETE"])
+@admin_required
 def delete_user(id):
     #Query the data from the database by id
     user = db.get_or_404(Auth, id)

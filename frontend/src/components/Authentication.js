@@ -1,77 +1,79 @@
 import apiFetch from "../api";
 import { createContext, useContext, useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
+// Landing page for each role after login
+export const ROLE_HOME = {
+  admin: '/admin',
+  client: '/events',
+};
+
+export const homeFor = (user) => (user && ROLE_HOME[user.role]) || '/';
+
+function storeUser(user) {
+  if (user) {
+    sessionStorage.setItem('user', JSON.stringify(user));
+  } else {
+    sessionStorage.removeItem('user');
+  }
+}
+
 export const Authentication = ({ children }) => {
-    // const navigate = useNavigate()
-  const [admin, setAdmin] = useState(() => {
-    // Initialize admin state from sessionStorage, if available
-    const storedAdmin = sessionStorage.getItem('admin');
-    return storedAdmin ? JSON.parse(storedAdmin) : null;
+  // Initialize user state from sessionStorage, if available
+  const [user, setUser] = useState(() => {
+    const storedUser = sessionStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  const loginUser = async (user) => {
-    try {
-      const response = await apiFetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-      });
+  // The server session is the source of truth: re-sync on load in case it expired
+  useEffect(() => {
+    apiFetch('/current_user')
+      .then(response => (response.ok ? response.json() : null))
+      .then(currentUser => {
+        setUser(currentUser);
+        storeUser(currentUser);
+      })
+      .catch(() => {});
+  }, []);
 
-      if (!response.ok) {
-        throw new Error('Invalid login credentials');
-      }
+  const loginUser = async (credentials) => {
+    const response = await apiFetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
 
-      const adminData = await response.json();
-      setAdmin(adminData);
-
-      // Save admin data to sessionStorage
-      sessionStorage.setItem('admin', JSON.stringify(adminData));
-
-      return adminData;
-    } catch (error) {
-      throw new Error('An error occurred during login');
+    if (!response.ok) {
+      throw new Error('Invalid login credentials');
     }
+
+    const userData = await response.json();
+    setUser(userData);
+    storeUser(userData);
+
+    return userData;
   };
 
   const logout = async () => {
     try {
-
-        const response = await apiFetch('/logout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Logout failed');
-        }
-
-        setAdmin(null);
-
-        // Remove admin data from sessionStorage
-        sessionStorage.removeItem('admin');
-
-        // Navigate to "/"
-        return <Navigate to="/" />;
-    
-    } catch (error) {
-      throw new Error('An error occurred during logout');
+      await apiFetch('/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } finally {
+      // Clear local state even if the request fails; route guards redirect to login
+      setUser(null);
+      storeUser(null);
     }
   };
 
-  // Cleanup localStorage on component unmount
-  useEffect(() => {
-    return () => sessionStorage.removeItem('admin');
-  }, []);
-
   return (
-    <AuthContext.Provider value={{ admin, loginUser, logout }}>
+    <AuthContext.Provider value={{ user, loginUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

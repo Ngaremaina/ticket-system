@@ -1,10 +1,9 @@
-import apiFetch from "../api";
+import apiFetch from "../../api";
 import {useEffect, useState} from "react"
 import EventList from "./EventList"
-import Header from "./Header"
 import Reservation from "./Reservation";
 
-export default function DashBoard({tickets}){
+export default function Dashboard(){
     const [events, setEvents] = useState([]);
     
     //Send a GET request to the '/events' endpoint to get the events
@@ -16,8 +15,7 @@ export default function DashBoard({tickets}){
     },[])
 
     return (
-      <div className="dark:bg-gray-800 dark:border-gray-700">
-        <Header/>
+      <div>
         {/* Pass the events as a prop to the EventList*/}
         <EventList events={events}/>
         <Reservation/>

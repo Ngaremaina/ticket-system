@@ -1,25 +1,24 @@
-import apiFetch from "../api";
+import apiFetch from "../../api";
 import {useEffect, useState} from "react"
 import EventList from "./EventList"
-import Header from "./Header";
 
-export default function DashBoard({EDITMODE}){
+export default function Dashboard(){
   // Initialize state for events data using the 'useState' hook
     const [events, setEvents] = useState([]);
 
     // Send a GET request to the '/events' endpoint with the form data
-    useEffect(()=> {
+    function loadEvents(){
         apiFetch("/events")
         .then(response => response.json())
         .then(data => setEvents(data))
+    }
 
-    },[])
+    useEffect(loadEvents, [])
   
     return (
       <div>
-        <Header/>
         {/* Pass the events as props to the EventList*/}
-        <EventList events={events} />
+        <EventList events={events} onDelete={loadEvents} />
       </div>
     );
 }

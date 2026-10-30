@@ -1,4 +1,4 @@
-import apiFetch from "../api";
+import apiFetch from "../../api";
 import { useEffect, useState } from "react"
 import { useParams, useNavigate} from "react-router-dom"
 
@@ -9,7 +9,7 @@ export default function EventForm(){
 
    // Send a GET request to the '/events' endpoint by 'name'
     useEffect(() => {
-        apiFetch(`/events/${name}`)
+        apiFetch(`/events/${encodeURIComponent(name)}`)
         .then(response => response.json())
         .then(data => setEvents(data))
     },[name])
@@ -51,7 +51,7 @@ export default function EventForm(){
         .then(response => {
             // If the response is OK, navigate to the '/dashboard' route
             if (response.ok){
-                navigate('/dashboard')
+                navigate('/admin')
             }
         })
 

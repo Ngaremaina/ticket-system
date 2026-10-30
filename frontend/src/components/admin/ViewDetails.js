@@ -1,4 +1,4 @@
-import apiFetch from "../api";
+import apiFetch from "../../api";
 import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 
@@ -6,14 +6,15 @@ export default function ViewDetails(){
     const { name } = useParams()
     const [product, setEvents] = useState({})
     //Send a GET request to the '/events' endpoint by 'name'
+    async function fetchingProduct(){
+        const response = await apiFetch(`/events/${encodeURIComponent(name)}`)
+        const data = await response.json()
+        return setEvents(data)
+    }
+
     useEffect(()=>{
-        const fetchingProduct = async () => {
-            const response = await apiFetch(`/events/${name}`)
-            const data = await response.json()
-            
-            return setEvents(data)
-        }
         fetchingProduct()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[name])
 
      // Initialize state for ticket data using the 'useState' hook
@@ -26,13 +27,18 @@ export default function ViewDetails(){
     function handleSubmit(event){
         // Prevent the default form submission behavior
         event.preventDefault()
-        typeticket["event_id"] = product.id
 
         // Send a POST request to the '/types' endpoint with the ticket data
         apiFetch("/types", {
             method:"POST",
             headers:{"Content-Type": "application/json"},
-            body:JSON.stringify(typeticket)
+            body:JSON.stringify({...typeticket, event_id: product.id})
+        })
+        //Reload the event so the new ticket type shows up
+        .then(response => {
+            if (response.ok){
+                fetchingProduct()
+            }
         })
 
     }
