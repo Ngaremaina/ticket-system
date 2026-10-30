@@ -18,6 +18,6 @@ marshmallow==3.26.2
 packaging==26.3
 psycopg2-binary==2.9.11
 python-dotenv==1.2.1
-SQLAlchemy==2.0.44
+SQLAlchemy==2.1.6
 typing_extensions==4.15.0
 Werkzeug==3.1.9
