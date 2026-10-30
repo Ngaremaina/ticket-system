@@ -1,15 +1,10 @@
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-ra"
-
-[tool.ruff]
 line-length = 120
 target-version = "py312"
 extend-exclude = ["migrations"]
 
-[tool.ruff.lint]
+[lint]
 select = ["E", "F", "I", "B"]
 ignore = ["E501"]
 
-[tool.ruff.lint.isort]
+[lint.isort]
 known-first-party = ["server"]
