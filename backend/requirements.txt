@@ -16,7 +16,7 @@ Mako==1.4.2
 MarkupSafe==3.0.3
 marshmallow==3.26.2
 packaging==26.3
-psycopg2-binary==2.9.11
+psycopg2-binary==2.9.13
 python-dotenv==1.2.1
 SQLAlchemy==2.0.44
 typing_extensions==4.15.0
