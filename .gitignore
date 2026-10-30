@@ -1,1 +1,34 @@
-env
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Local databases
+backend/instance/
+*.db
+*.sqlite3
+
+# Node
+node_modules/
+build/
+coverage/
+npm-debug.log*
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Vercel
+.vercel

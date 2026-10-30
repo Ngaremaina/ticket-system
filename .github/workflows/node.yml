@@ -1,0 +1,46 @@
+name: Node
+
+on:
+  push:
+    branches: [main]
+    paths: ["frontend/**", ".github/workflows/node.yml"]
+  pull_request:
+    branches: [main]
+    paths: ["frontend/**", ".github/workflows/node.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  test-and-build:
+    name: Test & build (frontend)
+    runs-on: ubuntu-latest
+
+    env:
+      CI: true
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test -- --watchAll=false
+
+      - name: Build
+        run: npm run build

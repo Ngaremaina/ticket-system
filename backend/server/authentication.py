@@ -1,26 +1,63 @@
-from server import *
+from functools import wraps
 
-#Register user 
-@app.route("/register", methods = ["POST"])
+from flask import Blueprint, abort, jsonify, request, session
+
+from server.extensions import bcrypt, db
+from server.models import Auth
+from server.schemas import AuthSchema, LoginSchema
+
+# Create a Blueprint for the authentication routes
+auth = Blueprint("auth", __name__)
+
+
+def current_user():
+    """Return the logged in user for this request, or None."""
+    user_id = session.get("user_id")
+    return db.session.get(Auth, user_id) if user_id else None
+
+
+def roles_required(*roles):
+    """Require a logged in user; when roles are given, the user must have one of them."""
+    def decorator(view):
+        @wraps(view)
+        def wrapped(*args, **kwargs):
+            user = current_user()
+            if user is None:
+                abort(401, description="Authentication required")
+            if roles and user.role not in roles:
+                abort(403, description="You do not have permission to perform this action")
+            return view(*args, **kwargs)
+        return wrapped
+    return decorator
+
+
+# Any logged in user
+login_required = roles_required()
+admin_required = roles_required("admin")
+
+
+def require_self_or_admin(user_id):
+    """Abort unless the current user owns the resource or is an admin."""
+    user = current_user()
+    if user.role != "admin" and user.id != user_id:
+        abort(403, description="You do not have permission to access this resource")
+
+#Register user
+@auth.route("/register", methods = ["POST"])
 def add_users():
-
-    #Get the details from the user
-    email = request.json["email"]
-    password = request.json["password"]
-    role = request.json["role"]
-
-    #Check whether the user is in the database
-    user_exists = Auth.query.filter_by(email = email).first()
+    #Validate the details from the user
+    data = AuthSchema().load(request.get_json(silent=True) or {})
+    email = data["email"].lower()
 
     #If the user exists return the message user exists
-    if user_exists:
-        return jsonify(message = "User exists")
-    
-    #Hash the password using generate_password_hash() function
-    hashed_password = bcrypt.generate_password_hash(password)
+    if Auth.query.filter_by(email = email).first():
+        return jsonify(message = "User exists"), 409
 
-    #Add user to the Auth model
-    new_user = Auth(email = email, password = hashed_password, role = role)
+    #Hash the password and store it as text
+    hashed_password = bcrypt.generate_password_hash(data["password"]).decode("utf-8")
+
+    #Public sign ups are always clients; admins are created with `flask create-admin`
+    new_user = Auth(email = email, password = hashed_password, role = "client")
 
     #Add user to the database
     db.session.add(new_user)
@@ -30,70 +67,56 @@ def add_users():
     return jsonify({
         "id":new_user.id,
         "email":new_user.email
-    })
+    }), 201
 
 
 #Route for login user
-@app.route("/login", methods = ["POST"])
+@auth.route("/login", methods = ["POST"])
 def login_user():
-    #Get the details from the user
-    email = request.json["email"]
-    password = request.json["password"]
+    #Validate the details from the user
+    data = LoginSchema().load(request.get_json(silent=True) or {})
 
     #Check whether the user is in the database
-    user = Auth.query.filter_by(email = email).first()
+    user = Auth.query.filter_by(email = data["email"].lower()).first()
 
-    #Create a session to store the user id
+    #If the user does not exist or the password is wrong return unauthorized
+    if user is None or not bcrypt.check_password_hash(user.password, data["password"]):
+        return jsonify(message = "Unauthorized"), 401
+
+    #Create a fresh session to store the user id
+    session.clear()
     session["user_id"] = user.id
-    
-    #If the user does not exist return the message unauthorized
-    if user is None:
-        return jsonify(message = "Unauthorized")
-    
-    #If the password is wrong return the message unauthorized
-    if not bcrypt.check_password_hash(user.password, password):
-        return jsonify(message = "Unauthorized")
-    
+
     #Return the user details
     return jsonify({
         "id":user.id,
-        "email": email,
+        "email": user.email,
         "role": user.role
-       
     })
 
 #Get details of the logged in user
-@app.route("/current_user", methods=["GET"])
+@auth.route("/current_user", methods=["GET"])
 def get_current_user():
-    #Get the stored session by id
-    user_id = session.get("user_id")
+    #Get the user stored in the session
+    user = current_user()
 
     #If invalid return the error message unauthorized
-    if not user_id:
-        return jsonify(error =  "Unauthorized")
-    
-    #Query the database and find the user by id
-    user = Auth.query.filter_by(id = user_id).first()
+    if user is None:
+        return jsonify(error = "Unauthorized"), 401
 
     #Return the user details
-    response = jsonify({
+    return jsonify({
         "id": user.id,
         "email": user.email,
         "role": user.role
     })
 
-    return response
-
 
 #Route for logout
-@app.route("/logout", methods = ["POST"])
+@auth.route("/logout", methods = ["POST"])
 def logout_user():
-    #Check if user is in session
-    if "user_id" in session:
-        #If true remove the id from the session
-        session.pop("user_id")
-        
-    #Return the message logged out 
-    return make_response(jsonify("logged out"), 200)
+    #Remove everything from the session
+    session.clear()
 
-
+    #Return the message logged out
+    return jsonify("logged out"), 200
