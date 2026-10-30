@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 # Load variables from backend/.env so gunicorn and the flask CLI see the same config
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
-
 def _bool(name, default=False):
     value = os.environ.get(name)
     if value is None:
