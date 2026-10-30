@@ -7,15 +7,7 @@ version: 2
 updates:
   # React frontend (npm)
   - package-ecosystem: "npm"
-    directory: "/admin"
-    schedule:
-      interval: "weekly"
-    ignore:
-      # Create React App's PostCSS setup only supports Tailwind v3
-      - dependency-name: "tailwindcss"
-        update-types: ["version-update:semver-major"]
-  - package-ecosystem: "npm"
-    directory: "/client"
+    directory: "/frontend"
     schedule:
       interval: "weekly"
     ignore:

@@ -3,10 +3,10 @@ name: Node
 on:
   push:
     branches: [main]
-    paths: ["admin/**", "client/**", ".github/workflows/node.yml"]
+    paths: ["frontend/**", ".github/workflows/node.yml"]
   pull_request:
     branches: [main]
-    paths: ["admin/**", "client/**", ".github/workflows/node.yml"]
+    paths: ["frontend/**", ".github/workflows/node.yml"]
 
 permissions:
   contents: read
@@ -15,31 +15,26 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    working-directory: frontend
+
 jobs:
   test-and-build:
-    name: ${{ matrix.app }}
+    name: Test & build (frontend)
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        app: [admin, client]
-
-    defaults:
-      run:
-        working-directory: ${{ matrix.app }}
 
     env:
       CI: true
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
-          cache-dependency-path: ${{ matrix.app }}/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         run: npm ci
