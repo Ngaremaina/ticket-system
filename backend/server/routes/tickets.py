@@ -1,4 +1,8 @@
-from server import *
+from flask import Blueprint, jsonify, make_response, request
+
+from server.extensions import db
+from server.models import Ticket
+from server.schemas import TicketSchema
 
 # Create a Blueprint for the 'tickets' module
 tickets = Blueprint('tickets', __name__)
@@ -19,7 +23,7 @@ def get_tickets():
 @tickets.route("/tickets/<int:id>", methods = ["GET"])
 def get_ticket(id):
     #Query the ticket by id from the database
-    ticket = Ticket.query.filter_by(id =  id).first()
+    ticket = db.get_or_404(Ticket, id)
 
     # Serialize the data using TicketSchema and dump it
     ticket_data = TicketSchema().dump(ticket)
@@ -31,7 +35,7 @@ def get_ticket(id):
 @tickets.route("/tickets", methods = ["POST"])
 def add_ticket():
      # Get the data from the request
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     # Deserialize the data using TicketSchema and load it
     tickets = TicketSchema().load(data)
@@ -47,19 +51,19 @@ def add_ticket():
     ticket_schema = TicketSchema().dump(new_ticket)
     
      # Return the serialized data as JSON
-    return make_response(jsonify(ticket_schema))
+    return make_response(jsonify(ticket_schema), 201)
 
 #Route to update tickets
 @tickets.route('/tickets/<int:id>', methods=['PATCH'])
 def update_ticket_details(id):
      #Query the data from the database by id
-    ticket = Ticket.query.filter_by(id = id).first()
+    ticket = db.get_or_404(Ticket, id)
 
    # Get the new data from the request
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     # Deserialize the data using TicketSchema and load it
-    tickets = TicketSchema().load(data)
+    tickets = TicketSchema(partial=True).load(data)
 
      # Update the ticket object with the new data
     for field, value in tickets.items():
@@ -79,7 +83,7 @@ def update_ticket_details(id):
 @tickets.route("/tickets/<int:id>", methods = ["DELETE"])
 def delete_ticket(id):
     #Query the data from the database by id
-    ticket = Ticket.query.filter_by(id = id).first()
+    ticket = db.get_or_404(Ticket, id)
 
      # Delete the Ticket object from the database
     db.session.delete(ticket)

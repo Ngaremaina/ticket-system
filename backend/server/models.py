@@ -1,15 +1,13 @@
-#import flask sqlalchemy
-from flask_sqlalchemy import SQLAlchemy
+# The SQLAlchemy instance lives in extensions.py so it can be bound in create_app()
+from server.extensions import db
 
-# Initialize SQLAlchemy to interact with the database
-db = SQLAlchemy()
 
 # Define a SQLAlchemy model named "Auth" to represent the users in the database.
 class Auth(db.Model):
     __tablename__ = "auth"
 
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
-    email = db.Column(db.String(255), nullable = False)
+    email = db.Column(db.String(255), nullable = False, unique = True, index = True)
     password = db.Column(db.String(255), nullable = False)
     role = db.Column(db.String(255), nullable = False)
     
@@ -29,7 +27,7 @@ class Profile(db.Model):
     # allowing easy access to the related "Auth" instance(s) associated with a "Profile" instance
     # via the "profile" attribute of the "Auth" model.
 
-    auth = db.relationship("Auth", backref = "profile")
+    auth = db.relationship("Auth", backref = db.backref("profile", cascade = "all, delete-orphan"))
 
 # Define a SQLAlchemy model named "Event" to represent events in the database.
 class Event(db.Model):
@@ -59,7 +57,7 @@ class Type(db.Model):
     # Establishes a one-to-many relationship between the "Event" and "Type" models,
     # allowing easy access to the related "Event" instance(s) associated with a "Type" instance
     # via the "type" attribute of the "Event" model.
-    event = db.relationship("Event", backref = "type")
+    event = db.relationship("Event", backref = db.backref("type", cascade = "all, delete-orphan"))
 
 # Define a SQLAlchemy model named "Ticket" to represent tickets booked by each user in the database.
 class Ticket(db.Model):
@@ -83,4 +81,4 @@ class Ticket(db.Model):
     # Establishes a one-to-many relationship between the "Auth" and "Ticket" models,
     # allowing easy access to the related "Auth" instance(s) associated with a "Ticket" instance
     # via the "ticket" attribute of the "Auth" model.
-    auth = db.relationship("Auth", backref = "ticket")
+    auth = db.relationship("Auth", backref = db.backref("ticket", cascade = "all, delete-orphan"))

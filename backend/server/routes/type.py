@@ -1,4 +1,8 @@
-from server import *
+from flask import Blueprint, jsonify, make_response, request
+
+from server.extensions import db
+from server.models import Type
+from server.schemas import TypeSchema
 
 # Create a Blueprint for the 'types' module
 types = Blueprint('types', __name__)
@@ -19,7 +23,7 @@ def get_types():
 @types.route("/types/<int:id>", methods=["GET"])
 def get_type(id):
     # Query the type by id from the database
-    type = Type.query.filter_by(id=id).first()
+    type = db.get_or_404(Type, id)
 
     # Serialize the data using TypeSchema and dump it
     type_data = TypeSchema().dump(type)
@@ -31,7 +35,7 @@ def get_type(id):
 @types.route("/types", methods=["POST"])
 def add_type():
     # Get the data from the request
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     # Deserialize the data using TypeSchema and load it
     types = TypeSchema().load(data)
@@ -47,19 +51,19 @@ def add_type():
     type_schema = TypeSchema().dump(new_type)
 
     # Return the serialized data as JSON
-    return make_response(jsonify(type_schema))
+    return make_response(jsonify(type_schema), 201)
 
 # Route to update types
 @types.route('/types/<int:id>', methods=['PATCH'])
 def update_type_details(id):
     # Query the data from the database by id
-    type = Type.query.filter_by(id=id).first()
+    type = db.get_or_404(Type, id)
 
     # Get the new data from the request
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     # Deserialize the data using TypeSchema and load it
-    types = TypeSchema().load(data)
+    types = TypeSchema(partial=True).load(data)
 
     # Update the Type object with the new data
     for field, value in types.items():
@@ -79,7 +83,7 @@ def update_type_details(id):
 @types.route("/types/<int:id>", methods=["DELETE"])
 def delete_type(id):
     # Query the data from the database by id
-    type = Type.query.filter_by(id=id).first()
+    type = db.get_or_404(Type, id)
 
     # Delete the Type object from the database
     db.session.delete(type)

@@ -1,9 +1,9 @@
-from server import app, authentication
-from werkzeug.serving import run_simple
+import os
+
+from server import create_app
+
+# WSGI entry point used by gunicorn (main:app) and the flask CLI
+app = create_app()
 
 if __name__ == "__main__":
-    run_simple(
-        hostname='0.0.0.0',
-        port=5000,
-        application=app
-    )
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

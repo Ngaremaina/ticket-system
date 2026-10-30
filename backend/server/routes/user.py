@@ -1,4 +1,8 @@
-from server import *
+from flask import Blueprint, jsonify, make_response, request
+
+from server.extensions import bcrypt, db
+from server.models import Auth
+from server.schemas import AuthSchema
 
 # Create a Blueprint for the 'user' module
 user = Blueprint('user', __name__)
@@ -19,7 +23,7 @@ def get_users():
 @user.route("/users/<int:id>", methods = ["GET"])
 def get_users_by_id(id):
     #Query the user by id from the database
-    users_list = Auth.query.filter_by(id = id).first()
+    users_list = db.get_or_404(Auth, id)
 
     # Serialize the data using AuthSchema and dump it
     user_data = AuthSchema().dump(users_list)  
@@ -31,13 +35,17 @@ def get_users_by_id(id):
 @user.route('/users/<int:id>', methods=['PATCH'])
 def update_user_details(id):
      #Query the data from the database by id
-    user = Auth.query.filter_by(id = id).first()
+    user = db.get_or_404(Auth, id)
 
      # Get the new data from the request
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
    # Deserialize the data using AuthSchema and load it
-    users = AuthSchema().load(data)
+    users = AuthSchema(partial=True).load(data)
+
+    # Never store a plain text password
+    if "password" in users:
+        users["password"] = bcrypt.generate_password_hash(users["password"]).decode("utf-8")
 
     # Update the users object with the new data
     for field, value in users.items():
@@ -57,7 +65,7 @@ def update_user_details(id):
 @user.route("/users/<int:id>", methods = ["DELETE"])
 def delete_user(id):
     #Query the data from the database by id
-    user = Auth.query.filter_by(id = id).first()
+    user = db.get_or_404(Auth, id)
 
     # Delete the user object from the database
     db.session.delete(user)

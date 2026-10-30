@@ -10,13 +10,27 @@ updates:
     directory: "/admin"
     schedule:
       interval: "weekly"
+    ignore:
+      # Create React App's PostCSS setup only supports Tailwind v3
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: "npm"
     directory: "/client"
     schedule:
       interval: "weekly"
+    ignore:
+      # Create React App's PostCSS setup only supports Tailwind v3
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
 
   # Python backend (pip)
   - package-ecosystem: "pip"
     directory: "/backend"
+    schedule:
+      interval: "weekly"
+
+  # GitHub Actions used by the workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
       interval: "weekly"

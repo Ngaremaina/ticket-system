@@ -1,4 +1,8 @@
-from server import *
+from flask import Blueprint, jsonify, make_response, request
+
+from server.extensions import db
+from server.models import Event
+from server.schemas import EventSchema
 
 # Create a Blueprint for the 'events' module
 events = Blueprint('events', __name__)
@@ -19,7 +23,7 @@ def get_events():
 @events.route("/events/<string:name>", methods = ["GET"])
 def get_event(name):
     #Query the event by name from the database
-    event = Event.query.filter_by(name = name).first()
+    event = Event.query.filter_by(name = name).first_or_404()
 
     # Serialize the data using EventSchema and dump it
     event_data = EventSchema().dump(event)
@@ -31,7 +35,7 @@ def get_event(name):
 @events.route("/events/<int:id>", methods = ["GET"])
 def get_event_by_id(id):
      #Query the event by id from the database
-    event = Event.query.filter_by(id = id).first()
+    event = db.get_or_404(Event, id)
 
     # Serialize the data using EventSchema and dump it
     event_data = EventSchema().dump(event)
@@ -43,7 +47,7 @@ def get_event_by_id(id):
 @events.route("/events", methods = ["POST"])
 def add_event():
      # Get the new data from the request
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     # Deserialize the data using EventSchema and load it
     events = EventSchema().load(data)
@@ -59,20 +63,20 @@ def add_event():
     event_schema = EventSchema().dump(new_event)
 
      # Return the serialized data as JSON
-    return make_response(jsonify(event_schema))
+    return make_response(jsonify(event_schema), 201)
 
 #Route to update events
 @events.route('/events/<int:id>', methods=['PATCH'])
 def update_event_details(id):
 
     #Query the data from the database by id
-    event = Event.query.filter_by(id = id).first()
+    event = db.get_or_404(Event, id)
 
     # Get the new data from the request
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     # Deserialize the data using EventSchema and load it
-    events = EventSchema().load(data)
+    events = EventSchema(partial=True).load(data)
 
      # Update the Event object with the new data
     for field, value in events.items():
@@ -93,7 +97,7 @@ def update_event_details(id):
 def delete_event(id):
 
     #Query the data from the database by id
-    event = Event.query.filter_by(id = id).first()
+    event = db.get_or_404(Event, id)
 
     # Delete the Event object from the database
     db.session.delete(event)
